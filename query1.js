@@ -10,6 +10,9 @@ function find_user(city, dbname) {
     // db.users.find(...);
 
     // See test.js for a partial correctness check.
+    // find all users who have their hometown city set as the given city
+    const cursor = db.users.find({ "hometown.city": city }, { "user_id": 1, "_id": 0 });
+    cursor.forEach(element => results.push(element.user_id));
 
     return results;
 }
