@@ -93,7 +93,7 @@ public class GetData {
                         current_city.put("city", current_city_rst.getString(1));
                         current_city.put("state", current_city_rst.getString(2));
                     }
-                    user.put("current_city", current_city);
+                    user.put("current", current_city);
                     
                     user.put("gender", gender);
                     user.put("user_id", userId);
