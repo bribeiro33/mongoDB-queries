@@ -46,7 +46,83 @@ public class GetData {
         
         try (Statement stmt = oracleConnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
             // Your implementation goes here....
-            
+            // Get all user info
+            // id, firstname, lastname, DOB, MOB, YOB, gender
+            ResultSet rst = stmt.executeQuery("SELECT * FROM " + userTableName);
+
+            // Convert all user's info to JSON
+            // each iteration is a diff user
+            while (rst.next()){
+                JSONObject user = new JSONObject();
+                
+                long userId = rst.getLong(1);
+                String firstName = rst.getString(2);
+                String lastName = rst.getString(3);
+                int yob = rst.getInt(4);
+                user.put("MOB", rst.getInt(5));
+                int dob = rst.getInt(6);
+                String gender = rst.getString(7);
+
+                try (Statement stmtInner = oracleConnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
+                    
+                    // Get user's hometown
+                    JSONObject hometown = new JSONObject();
+                    ResultSet hometown_rst = stmtInner.executeQuery(
+                        "SELECT C.CITY_NAME, C.STATE_NAME, C.COUNTRY_NAME " + 
+                        "FROM " + cityTableName + " C, " + hometownCityTableName + " H " +
+                        "WHERE C.CITY_ID = H.HOMETOWN_CITY_ID AND H.USER_ID = " + userId
+                    );
+
+
+                    if (hometown_rst.next()) {
+                        hometown.put("country", hometown_rst.getString(3));
+                        hometown.put("city", hometown_rst.getString(1));
+                        hometown.put("state", hometown_rst.getString(2));
+                    }
+                    user.put("hometown", hometown);
+                    hometown_rst.close();
+                    // Get user's current city
+                    JSONObject current_city = new JSONObject();
+                    ResultSet current_city_rst = stmtInner.executeQuery(
+                        "SELECT C.CITY_NAME, C.STATE_NAME, C.COUNTRY_NAME " + 
+                        "FROM " + cityTableName + " C, " + currentCityTableName + " H " +
+                        "WHERE C.CITY_ID = H.CURRENT_CITY_ID AND H.USER_ID = " + userId
+                    );
+                    if (current_city_rst.next()) {
+                        current_city.put("country", current_city_rst.getString(3));
+                        current_city.put("city", current_city_rst.getString(1));
+                        current_city.put("state", current_city_rst.getString(2));
+                    }
+                    user.put("current_city", current_city);
+                    
+                    user.put("gender", gender);
+                    user.put("user_id", userId);
+                    user.put("DOB", dob);
+                    user.put("last_name", lastName);
+                    user.put("first_name", firstName);
+                    user.put("YOB", yob);
+
+                    //Get user's friends, JSON ARRAY of ids
+                    JSONArray friends = new JSONArray();
+                    ResultSet friends_rst = stmtInner.executeQuery(
+                        "SELECT USER2_ID " + 
+                        "FROM " + friendsTableName + " " +
+                        "WHERE USER1_ID = " + userId
+                    );
+
+                    while (friends_rst.next()) {
+                        friends.put(friends_rst.getLong(1));
+                    }
+                    user.put("friends", friends);
+
+                    stmtInner.close();
+                } catch (SQLException e) {
+                    System.err.println(e.getMessage());
+                }
+                users_info.put(user);
+                
+
+            }
             
             stmt.close();
         } catch (SQLException e) {
