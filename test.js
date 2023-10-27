@@ -48,7 +48,7 @@ function cleanUp(){
     let ans3 = 0;
     if (test3.hasNext()) {
         test3 = test3.next().users;
-        // print(test3) // uncomment this line to print the query3 output
+        //print(test3) // uncomment this line to print the query3 output
         ans3 = test3.length;
     }
     if (ans3 == 43) {

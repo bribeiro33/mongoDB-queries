@@ -9,7 +9,6 @@
 function cities_table(dbname) {
     db = db.getSiblingDB(dbname);
 
-    // TODO: implement cities collection here
     db.users.aggregate([
         {
             // group by city and push all user_ids into an array
@@ -17,7 +16,7 @@ function cities_table(dbname) {
             $group: {
                 _id: "$current.city",
                 users: {
-                    $push: {user_id:"$user_id"}
+                    $push: "$user_id"
                 }
             }
         },
