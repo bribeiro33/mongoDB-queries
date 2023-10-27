@@ -61,7 +61,7 @@ function cleanUp(){
 
     print("=== Test 4 ===");
     let test4 = suggest_friends(5, dbname);
-    test4.forEach(printjson); // uncomment this line to print the query4 output
+    // test4.forEach(printjson); // uncomment this line to print the query4 output
     let ans4 = test4.length;
     if (ans4 == 87) {
         print("Local test passed! Partially correct.");
@@ -73,7 +73,7 @@ function cleanUp(){
 
     print("=== Test5 === (This test can take up to a minute)");
     let test5 = oldest_friend(dbname);
-    // printjson(test5); // uncomment this line to print the query5 output
+    //printjson(test5); // uncomment this line to print the query5 output
     if (Object.keys(test5).length == 798) {
         if (test5.hasOwnProperty(799)) {
             let ans5 = test5[799];
