@@ -5,7 +5,42 @@
 function find_average_friendcount(dbname) {
     db = db.getSiblingDB(dbname);
 
-    // TODO: calculate the average friend count
+    
+    let result = db.users.aggregate([
+        // Unwind the friends list
+        {
+            $unwind: {
+                path: "$friends",
+                preserveNullAndEmptyArrays: true // count users with 0/null friends
+            }
+        },
+        // Group by user_id and count the number of friends each user has
+        {
+            $group: {
+                _id: "$user_id",
+                friendCount: { $sum: 1 }
+            }
+        },
+        // Group again to calculate the average across all users
+        {
+            $group: {
+                _id: null,
+                averageFriendCount: { $avg: "$friendCount" }
+            }
+        },
+        // Project to only return the average
+        {
+            $project: {
+                _id: 0,
+                averageFriendCount: 1
+            }
+        }
+    ]).toArray();
 
-    return 0;
+    if (result.length > 0) {
+        return result[0].averageFriendCount;
+    } else {
+        return 0;
+    }
 }
+

@@ -11,12 +11,16 @@ function unwind_friends(dbname) {
 
     // TODO: unwind friends
     db.users.aggregate([
+        // unwind friends array, creating a document for each friend
         {$unwind: "$friends"},
-        {$project: {
-            _id:0,
-            user_id: 1,
-            friends: 1,
-        }},
+        {
+            // Reshapes each document in the stream by restricting the content for each document based on the specified conditions
+            $project: {
+                _id:0,
+                user_id: 1,
+                friends: 1,
+            }
+        },
         {$out: "flat_users"}
     ]);
 

@@ -61,7 +61,7 @@ function cleanUp(){
 
     print("=== Test 4 ===");
     let test4 = suggest_friends(5, dbname);
-    // test4.forEach(printjson); // uncomment this line to print the query4 output
+    test4.forEach(printjson); // uncomment this line to print the query4 output
     let ans4 = test4.length;
     if (ans4 == 87) {
         print("Local test passed! Partially correct.");
