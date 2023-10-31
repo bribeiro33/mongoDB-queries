@@ -95,7 +95,7 @@ function cleanUp(){
 
     print("=== Test 6 ===");
     let ans6 = find_average_friendcount(dbname);
-    // print(ans6); // uncomment this line to print the query6 output
+    print(ans6); // uncomment this line to print the query6 output
     if ((ans6 > 26) & (ans6 < 27)) {
         print("Local test passed! Partially correct.");
     } else {
@@ -126,7 +126,7 @@ function cleanUp(){
         finalize: city_average_friendcount_finalizer,
     });
     let test8 = db.friend_city_population.find();
-    // test8.forEach(printjson); // unconmment this line to print the query8 output
+    //test8.forEach(printjson); // unconmment this line to print the query8 output
     let ans8 = test8.count();
     if (ans8 == 16) {
         print("Local test passed! Partially correct.");
