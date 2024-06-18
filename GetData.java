@@ -37,7 +37,6 @@ public class GetData {
         hometownCityTableName = prefix + dataType + "_USER_HOMETOWN_CITIES";
     }
 
-    // TODO: Implement this function
     @SuppressWarnings("unchecked")
     public JSONArray toJSON() throws SQLException {
 
@@ -45,7 +44,6 @@ public class GetData {
         JSONArray users_info = new JSONArray();
         
         try (Statement stmt = oracleConnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
-            // Your implementation goes here....
             // Get all user info
             // id, firstname, lastname, DOB, MOB, YOB, gender
             ResultSet rst = stmt.executeQuery("SELECT * FROM " + userTableName);
@@ -81,6 +79,7 @@ public class GetData {
                     }
                     user.put("hometown", hometown);
                     hometown_rst.close();
+                    
                     // Get user's current city
                     JSONObject current_city = new JSONObject();
                     ResultSet current_city_rst = stmtInner.executeQuery(
@@ -94,7 +93,7 @@ public class GetData {
                         current_city.put("state", current_city_rst.getString(2));
                     }
                     user.put("current", current_city);
-                    
+
                     user.put("gender", gender);
                     user.put("user_id", userId);
                     user.put("DOB", dob);
@@ -102,7 +101,7 @@ public class GetData {
                     user.put("first_name", firstName);
                     user.put("YOB", yob);
 
-                    //Get user's friends, JSON ARRAY of ids
+                    // Get user's friends, which is a JSON ARRAY of ids
                     JSONArray friends = new JSONArray();
                     ResultSet friends_rst = stmtInner.executeQuery(
                         "SELECT USER2_ID " + 
@@ -132,8 +131,7 @@ public class GetData {
         return users_info;
     }
 
-    // This outputs to a file "output.json"
-    // DO NOT MODIFY this function
+    // Outputs to a file "output.json"
     public void writeJSON(JSONArray users_info) {
         try {
             FileWriter file = new FileWriter(System.getProperty("user.dir") + "/output.json");
